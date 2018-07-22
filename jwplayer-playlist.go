@@ -39,16 +39,6 @@ func main() {
 	log.Fatal(http.ListenAndServe(":"+args[0], router)) // Start the HTTP server with your specified port
 }
 
-func removeEmptyStrings(s []string) []string {
-	var r []string
-	for _, str := range s {
-		if str != "" {
-			r = append(r, str)
-		}
-	}
-	return r
-}
-
 func defaultHandler(w http.ResponseWriter, r *http.Request) {
 	v := r.URL.Query()
 	respondWithJson(w, http.StatusOK, fileWalker(v.Get("k")))
