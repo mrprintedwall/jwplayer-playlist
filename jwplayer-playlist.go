@@ -7,11 +7,13 @@ import (
 	"encoding/json"
 	"fmt"
 	"log"
+	"math/rand"
 	"net/http"
 	"net/url"
 	"os"
 	"path/filepath"
 	"strings"
+	"time"
 
 	"github.com/go-zoo/bone"
 )
@@ -77,10 +79,25 @@ func fileWalker(keyword string) []movie {
 		return nil
 	})
 
+	if len(keyword) <= 0 { // Random the list if not in search mode
+		shuffle(files)
+	}
+
 	if err != nil {
 		fmt.Printf("walk error [%v]\n", err)
 	}
 	return files
+}
+
+// Shuffle code from https://play.golang.org/p/IhMj4PCM7a
+func shuffle(movies []movie) {
+	r := rand.New(rand.NewSource(time.Now().Unix()))
+	for len(movies) > 0 {
+		n := len(movies)
+		randIndex := r.Intn(n)
+		movies[n-1], movies[randIndex] = movies[randIndex], movies[n-1]
+		movies = movies[:n-1]
+	}
 }
 
 func respondWithError(w http.ResponseWriter, code int, msg string) {
